@@ -37,6 +37,9 @@ export class LoginRankingsResponseDto {
   @ApiProperty({ type: [LoginRankingDto] })
   data: LoginRankingDto[];
 
-  @ApiProperty({ example: 20 })
+  @ApiProperty({ 
+    example: 15,
+    description: 'Total number of users who logged in this week' 
+  })
   totalUsers: number;
 }
