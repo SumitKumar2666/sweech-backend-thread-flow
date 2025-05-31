@@ -38,12 +38,26 @@ export class LoginRecordsService {
     const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust when day is Sunday
     const monday = new Date(now.setDate(diff));
     monday.setHours(0, 0, 0, 0);
-
+    
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
 
-    // Get login counts for this week grouped by user
+    // Get total count of users who logged in this week
+    const totalUsersThisWeek = await this.prisma.loginRecord.groupBy({
+      by: ['userId'],
+      where: {
+        loginAt: {
+          gte: monday,
+          lte: sunday,
+        },
+      },
+      _count: {
+        userId: true,
+      },
+    });
+
+    // Get login counts for this week grouped by user (top 20)
     const loginCounts = await this.prisma.loginRecord.groupBy({
       by: ['userId'],
       where: {
@@ -107,20 +121,18 @@ export class LoginRecordsService {
 
     return {
       data: rankings,
-      totalUsers: 20,
+      totalUsers: totalUsersThisWeek.length,
     };
   }
 
   private formatDateTime(date: Date): string {
-    return date
-      .toLocaleString('sv-SE', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      })
-      .replace('T', ' ');
+    return date.toLocaleString('sv-SE', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    }).replace('T', ' ');
   }
 }

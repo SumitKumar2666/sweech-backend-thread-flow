@@ -37,7 +37,7 @@ A comprehensive backend API built for Sweech, implementing user authentication, 
 ### Login Tracking
 - ✅ Login record tracking (user ID, IP address, timestamp)
 - ✅ Login history (last 30 records)
-- ✅ Weekly login count rankings (Monday-Sunday)
+- ✅ Weekly login count rankings (Monday-Sunday, top 20 users)
 
 ## Quick Start
 
